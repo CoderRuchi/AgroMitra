@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('prediction.urls')),
+    path('weather/', include('weather_api.urls')),
 ]
 
 # Serve static files in development

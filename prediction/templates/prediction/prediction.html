@@ -1,179 +1,1106 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Crop Disease Prediction</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Disease Prediction - BhoomiAI</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css"
         integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poetsen+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-        <style>
-            * {
-                margin: 0px;
-                padding: 0px;
-                box-sizing: border-box; font-family: "Lato", sans-serif;
-                font-weight: 400;
-                font-style: normal;
+    <style>
+        :root {
+            /* Main color palette */
+            --primary-color: #5a8f00;
+            --primary-light: #7ab317;
+            --primary-dark: #476e00;
+            --secondary-color: #2d2d2c;
+            --secondary-light: #3d3d3c;
+            --secondary-dark: #1a1a1a;
+            --accent-color: #FFA630;
+            --accent-light: #FFBF69;
 
+            /* Text colors */
+            --text-color: #4a4a4a;
+            --text-light: #777777;
+            --text-dark: #333333;
+
+            /* Background colors */
+            --light-bg: #f5f7f0;
+            --white: #ffffff;
+            --off-white: #f9f9f9;
+
+            /* Accent colors */
+            --accent: #ff6b35;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+
+            /* Spacing */
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 40px;
+            --spacing-xl: 80px;
+
+            /* Border radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-round: 50px;
+
+            /* Shadows */
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.1);
+            --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: var(--text-color);
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            font-weight: normal;
+            overflow-x: hidden;
+            background-color: var(--light-bg);
+            letter-spacing: 0.015em;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: 85px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: var(--spacing-md);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+        }
+
+        p {
+            margin-bottom: var(--spacing-md);
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+
+        /* Header Styles */
+        .header-area {
+            border-top: var(--primary-color) solid 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            height: 85px;
+            background: rgba(255, 255, 255, 0.98);
+            line-height: 68px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .header-area.scrolled {
+            height: 70px;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .logo a {
+            color: var(--secondary-color);
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .logo a img {
+            height: 40px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .logo a:hover img {
+            transform: scale(1.05);
+        }
+
+        .logo a span {
+            color: var(--primary-color);
+            position: relative;
+        }
+
+        .navbar-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .site-navbar ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+        }
+
+        .site-navbar ul li a {
+            color: var(--secondary-color);
+            font-size: 16px;
+            font-weight: 500;
+            display: block;
+            text-decoration: none;
+            padding: 0 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .site-navbar ul li a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 15px;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .site-navbar ul li a:hover:after,
+        .site-navbar ul li a.active:after {
+            width: calc(100% - 30px);
+        }
+
+        .site-navbar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .site-navbar ul li a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Mobile Menu Button */
+        .nav-toggler {
+            display: none;
+            border: none;
+            padding: 5px;
+            background-color: transparent;
+            cursor: pointer;
+            height: 39px;
+            width: 39px;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-toggler span,
+        .nav-toggler span:before,
+        .nav-toggler span:after {
+            width: 28px;
+            height: 3px;
+            background-color: var(--primary-color);
+            display: block;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-toggler span:before,
+        .nav-toggler span:after {
+            content: '';
+            position: absolute;
+            left: 0;
+        }
+
+        .nav-toggler span:before {
+            top: -9px;
+        }
+
+        .nav-toggler span:after {
+            top: 9px;
+        }
+
+        .nav-toggler.toggler-open span {
+            background-color: transparent;
+        }
+
+        .nav-toggler.toggler-open span:before {
+            top: 0;
+            transform: rotate(45deg);
+        }
+
+        .nav-toggler.toggler-open span:after {
+            top: 0;
+            transform: rotate(-45deg);
+        }
+
+        /* Prediction Page Specific Styles */
+        .prediction-container {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .prediction-container:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .prediction-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .prediction-result {
+            background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+            color: var(--white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prediction-result:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .confidence-score {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-color));
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-round);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            display: inline-block;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .solution-header {
+            background: linear-gradient(135deg, var(--secondary-light), var(--secondary-dark));
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-lg) 0 var(--spacing-md);
+            text-align: center;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .solution-content {
+            padding: var(--spacing-lg);
+            background-color: var(--off-white);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-inset);
+        }
+
+        .solution-content h5 {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .solution-content h5:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .medicine-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            margin: var(--spacing-xl) 0 var(--spacing-lg);
+            text-align: center;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .medicine-card {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .medicine-card img {
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            transition: all var(--transition-normal);
+        }
+
+        .medicine-card:hover img {
+            transform: scale(1.03);
+        }
+
+        .medicine-card-body {
+            padding: var(--spacing-md);
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .medicine-card-body h5 {
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .medicine-card-body p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .upload-another {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--white);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-round);
+            text-decoration: none;
+            font-weight: 600;
+            margin: var(--spacing-xl) auto;
+            text-align: center;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-md);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-another:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all var(--transition-slow);
+        }
+
+        .upload-another:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .upload-another:hover:before {
+            left: 100%;
+        }
+
+        /* Product Cards */
+        .card-style {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            margin-bottom: var(--spacing-md);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-style:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-style h3 {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            margin: var(--spacing-sm) 0;
+        }
+
+        /* Footer Styles */
+        .footer-area {
+            background: linear-gradient(135deg, var(--secondary-dark), var(--secondary-color));
+            color: var(--white);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            position: relative;
+        }
+
+        .footer-area:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--primary-color));
+        }
+
+        .footer-section {
+            flex: 0 0 25%;
+            max-width: 25%;
+            padding: 0 15px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            padding-bottom: var(--spacing-xs);
+        }
+
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .footer-section p {
+            color: #ccc;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section ul li a:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .footer-section ul li a:hover:before {
+            width: 100%;
+        }
+
+        .footer-section ul li i {
+            margin-right: 8px;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            margin-top: var(--spacing-md);
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: var(--spacing-md);
+        }
+
+        .copyright p {
+            color: #aaa;
+            margin: 0;
+        }
+
+        /* Loader Styles */
+        .loader_bg {
+            position: fixed;
+            z-index: 9999999;
+            background: var(--white);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            width: 100px;
+            height: 100px;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
             }
-    
-            .card-style {
-                background-color: #dcdcdc;
-    
+            100% {
+                transform: rotate(360deg);
             }
-    
-            .content {
-                padding: 15px;
-                color: white;
-                background-color: rgb(153, 156, 150);
-                /* font-size: 1rem; */
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-    
-            @media (max-width: 430px) and (min-width: 200px) {
-    
-    
-                .content {
-                    font-size: 0.6rem;
-                    color: chartreuse;
-                }
-    
-                .content-h1 {
-    
-                    font-size: 1rem;
-                }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-    
-            .border img {
-                border-radius: 15px;
-                border: 2px solid black;
-                width: 27vw;  
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            /* Mobile Menu Styles */
+            .nav-toggler {
+                display: block;
             }
-        </style>
+
+            .navbar-area {
+                position: relative;
+                padding: 15px 0;
+            }
+
+            .site-navbar {
+                width: 100%;
+            }
+
+            .site-navbar ul {
+                position: absolute;
+                width: 100%;
+                top: 100%;
+                left: 0;
+                background-color: var(--white);
+                padding: 15px 0;
+                margin-top: 10px;
+                flex-direction: column;
+                align-items: center;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-md);
+                max-height: 0;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                opacity: 0;
+                visibility: hidden;
+                z-index: 999;
+            }
+
+            .site-navbar ul.open {
+                max-height: 500px;
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .site-navbar ul li {
+                padding: 10px 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            .site-navbar ul li a {
+                padding: 8px 15px;
+                display: inline-block;
+            }
+
+            .site-navbar ul li a:after {
+                left: 15px;
+                bottom: 5px;
+            }
+
+            .prediction-image img {
+                width: 100% !important;
+                max-width: 300px;
+                margin: 0 auto;
+                display: block;
+            }
+
+            .footer-section {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: var(--spacing-md);
+            }
+
+            .prediction-container {
+                padding: var(--spacing-md);
+            }
+
+            .solution-content {
+                padding: var(--spacing-md);
+            }
+
+            .medicine-header {
+                margin: var(--spacing-lg) 0 var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 992px) and (min-width: 769px) {
+            .footer-section {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container my-2">
-        <h1  style="padding: 15px; background-color:rgb(1, 79, 93); color: white;  font-family: Poetsen One, sans-serif;
-        font-weight: 900;
-        font-style: normal;"
-        class="text-center my-3 content-h1" >Prediction Result</h1>
-        <div class="row mb-5">
-    
-                <div class="col-sm" style="margin-bottom: 23px;">
-                    <span class="border border-primary">
-                        <img src="{{ image_url }}" alt="Uploaded Image" >
-    
-    
-                    </span>
-                </div>
-    
-                <div class="col-sm">
-    
-                    <div>
-                        <h1 style="padding: 15px; background-color: rgb(123, 145, 164); color: white;"
-                            class="text-center mb-4 content-h1 rounded">
-                           {{predicted_class}}                            
-                        </h1>   
-                        <h4 class="m-0" style="padding: 5px; background-color: rgb(136, 164, 189); color: white;">Confidence Score: {{ confidence_format }} </h4> 
+    <!-- Loader -->
+    <div class="loader_bg">
+        <div class="loader">
+            <img src="https://i.imgur.com/kDDFvUp.png" alt="Loading..." />
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="logo">
+                        <a href="{% url 'home' %}">
+                            <img src="{% static 'images/logo.png' %}" >
+                            Bhoomi<span>AI</span>
+                        </a>
                     </div>
-                    {% if disease %}
-                    <h2>Disease Name:  {{ disease }}</h2>
-                    <h5 style="line-height: 100%;"> {{ text }} </h5>
-                    <hr class="w-100 mx-auto ">
-                    {% else %}
-                    <h2 style="line-height: 100%;">This crop is healthy. It's a healthy leaf image.</h2>
-                    {% endif %}                    
                 </div>
-    
-    <br>
-    <div>
-    <h1 class="text-center  content-h1 rounded" style="padding: 9px; background-color: rgb(90, 118, 120); color: white;">
-        {% if disease %} 
-        Solution for {{ disease }} Disease: 
-        {% else %}
-        Solution for {{ predicted_class }}: 
-        {% endif %}
-
-    
-    </h1>
-    <p> 
-      <strong>{{ solution }}</strong>    &nbsp;
-    </p>
-    <p>
-        <strong>{{ prevention }}</strong>
-
-    </p>
-
-   </div>
-    
-</div>
-    
-    
-      <section>
-        {% if disease %} 
-
-    
-            <div class="container">
-                <h1 style="padding: 12px; background-color: rgb(1, 79, 93); color: white;"
-                    class="text-center my-2 content-h1">
-                    Recommended Medicine Products</h1>
+                <div class="col-md-6">
+                    <div class="navbar-area">
+                        <nav class="site-navbar">
+                            <ul>
+                                <li><a href="{% url 'home' %}">Home</a></li>
+                                <li><a href="{% url 'about' %}">About</a></li>
+                                <li><a href="{% url 'services' %}">Services</a></li>
+                                <li><a href="{% url 'prediction' %}" class="active">Disease</a></li>
+                                <li><a href="{% url 'index' %}">Weather </a></li>
+                            </ul>
+                            <button class="nav-toggler">
+                                <span></span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="auth-links">
+                        <a href="{% url 'login' %}" class="btn-outline">Login</a>
+                    </div>
+                </div>
             </div>
-    
-            <div class="container">
-    
-                {% if medicine_products %}
+        </div>
+    </header>
 
-                <div class="card-columns">
-                    {% for product in medicine_products %}
+    <!-- Page Title -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="prediction-header mt-4 animate__animated animate__fadeIn">
+                    <h2 class="mb-0">Prediction Result</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="card ">
-                        <div class="card-body text-center card-style">
-                            <img style="border-radius: 10px; max-height: 250px;" class="img-fluid" src="{% static product.image %}" alt="{{ product.name }}">
-                            
-                            <h3 class="card-text"> {{ product.name }}</h3>
-                            <h3 class="card-text">Dose: 60-80 gm/Acre</h3>
-                        </div>
-                    </div>
+    <div class="container prediction-container animate__animated animate__fadeInUp">
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="prediction-image text-center">
+                    <img src="{{ image_url }}" alt="Uploaded Image" class="img-fluid rounded" style="max-height: 400px; border: 3px solid var(--primary-color); box-shadow: var(--shadow-md);">
+                </div>
+            </div>
 
-                {% endfor %}
+            <div class="col-md-6">
+                <div class="prediction-result mb-3 animate__animated animate__fadeIn delay-1">
+                    <h3 class="mb-0">{{predicted_class}}</h3>
+                </div>
 
+                <div class="confidence-score mb-4 animate__animated animate__fadeIn delay-2">
+                    <h5 class="mb-0">Confidence Score: {{ confidence_format }}</h5>
+                </div>
 
-    
+                {% if disease %}
+                <div class="solution-header animate__animated animate__fadeIn delay-1">
+                    <h4 class="mb-0">Disease: {{ disease }}</h4>
+                </div>
+
+                <div class="solution-content animate__animated animate__fadeIn delay-2">
+                    <p>{{ text }}</p>
+                </div>
+                {% else %}
+                <div class="solution-header animate__animated animate__fadeIn delay-1" style="background: linear-gradient(135deg, var(--success), #27ae60);">
+                    <h4 class="mb-0">Healthy Plant</h4>
+                </div>
+
+                <div class="solution-content animate__animated animate__fadeIn delay-2">
+                    <p>This crop is healthy. No disease has been detected in this leaf image.</p>
                 </div>
                 {% endif %}
-
-                          
-    
-    
-               
             </div>
-
-        {% else %}
-
-
-        <div class="container">
-            <h1 style="padding: 12px; background-color: rgb(1, 79, 93); color: white;"
-                class="text-center my-2 content-h1">
-                No Recommended Products</h1>
         </div>
 
+        {% if solution or prevention %}
+        <div class="row">
+            <div class="col-12 mt-4">
+                <div class="medicine-header animate__animated animate__fadeIn">
+                    {% if disease %}
+                    <h3 class="mb-0">Solution for {{ disease }} Disease</h3>
+                    {% else %}
+                    <h3 class="mb-0">Solution for {{ predicted_class }}</h3>
+                    {% endif %}
+                </div>
 
+                <div class="solution-content animate__animated animate__fadeIn delay-1">
+                    {% if solution %}
+                    <h5>Treatment:</h5>
+                    <p>{{ solution }}</p>
+                    {% endif %}
+
+                    {% if prevention %}
+                    <h5>Prevention:</h5>
+                    <p>{{ prevention }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% endif %}
-    
-        </section>
-    
-    
-    
 
+        {% if medicines %}
+        <div class="row">
+            <div class="col-12 mt-4">
+                <div class="medicine-header animate__animated animate__fadeIn">
+                    <h3 class="mb-0">Recommended Medicines</h3>
+                </div>
 
-        <h1 style="padding: 12px; background-color: rgb(1, 79, 93); color: white;"
-        class="text-center my-2 content-h1">
-               <a style=" color: white;" href="{% url 'home' %}">Upload Another Image To Predict</a>
+                <div class="row">
+                    {% for medicine in medicines %}
+                    <div class="col-md-4 mb-4 animate__animated animate__fadeInUp delay-{% cycle '1' '2' '3' %}">
+                        <div class="medicine-card">
+                            <img src="{{ medicine.image }}" alt="{{ medicine.name }}" class="img-fluid">
+                            <div class="medicine-card-body">
+                                <h5>{{ medicine.name }}</h5>
+                                <p>{{ medicine.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
-        </h1>
-        <br>
+        <div class="row">
+            <div class="col-12 text-center mt-4 mb-4 animate__animated animate__fadeIn delay-2">
+                <a href="{% url 'prediction' %}" class="upload-another">
+                    <i class="fas fa-upload mr-2"></i>Upload Another Image
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Section -->
+    <section class="animate__animated animate__fadeIn">
+        {% if disease %}
+        <div class="container">
+            <h1 style="padding: 12px; background: linear-gradient(135deg, #014f5d, #016a7f); color: white;"
+                class="text-center my-4 content-h1 animate__animated animate__fadeIn">
+                Recommended Medicine Products
+            </h1>
+        </div>
+
+        <div class="container">
+            {% if medicine_products %}
+            <div class="card-columns">
+                {% for product in medicine_products %}
+                <div class="card animate__animated animate__fadeInUp delay-{% cycle '1' '2' '3' %}">
+                    <div class="card-body text-center card-style">
+                        <img style="border-radius: 10px; max-height: 250px;" class="img-fluid" src="{% static product.image %}" alt="{{ product.name }}">
+                        <h3 class="card-text"> {{ product.name }}</h3>
+                        <h3 class="card-text">Dose: 60-80 gm/Acre</h3>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="container">
+            <h1 style="padding: 12px; background: linear-gradient(135deg, var(--success), #27ae60); color: white;"
+                class="text-center my-4 content-h1 animate__animated animate__fadeIn">
+                No Recommended Products Needed
+            </h1>
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-area">
+        <div class="container">
+            <div class="row">
+                <div class="footer-section animate__animated animate__fadeIn">
+                    <div class="logo">
+                        <a href="{% url 'home' %}" style="color: white;">Bhoomi<span>AI</span></a>
+                    </div>
+                    <p>Empowering farmers with technology to revolutionize agriculture and improve livelihoods.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section animate__animated animate__fadeIn delay-1">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="{% url 'about' %}"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="{% url 'services' %}"><i class="fas fa-chevron-right"></i> Services</a></li>
+                        <li><a href="{% url 'prediction' %}"><i class="fas fa-chevron-right"></i> Disease Detection</a></li>
+                        <li><a href="{% url 'index' %}"><i class="fas fa-chevron-right"></i> Weather Forecast</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section animate__animated animate__fadeIn delay-1">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="{% url 'services' %}"><i class="fas fa-seedling"></i> Soil Analysis</a></li>
+                        <li><a href="{% url 'prediction' %}"><i class="fas fa-leaf"></i> Crop Disease Detection</a></li>
+                        <li><a href="{% url 'index' %}"><i class="fas fa-cloud-sun"></i> Weather Forecast</a></li>
+                        <li><a href="{% url 'talk' %}"><i class="fas fa-microphone"></i> Voice Assistant</a></li>
+                        <li><a href="{% url 'services' %}"><i class="fas fa-tractor"></i> Farm Management</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section animate__animated animate__fadeIn delay-2">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Agriculture Road, Farmville</li>
+                        <li><i class="fas fa-phone"></i> +1 234 567 8901</li>
+                        <li><i class="fas fa-envelope"></i> info@bhoomiAI.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 9AM - 6PM</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright animate__animated animate__fadeIn delay-2">
+                <p>&copy; 2023 BhoomiAI. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu and Loader -->
+    <script>
+        // Remove loader when page is loaded
+        window.addEventListener('load', function () {
+            document.querySelector('.loader_bg').style.display = 'none';
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header-area');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Define all UI variables for mobile menu
+        const navToggler = document.querySelector('.nav-toggler');
+        const navMenu = document.querySelector('.site-navbar ul');
+        const navLinks = document.querySelectorAll('.site-navbar a');
+
+        // Load all event listeners
+        function initMobileMenu() {
+            // Toggler icon click event
+            navToggler.addEventListener('click', function() {
+                this.classList.toggle('toggler-open');
+                navMenu.classList.toggle('open');
+            });
+
+            // Nav links click event
+            navLinks.forEach(elem => elem.addEventListener('click', function() {
+                if (navMenu.classList.contains('open')) {
+                    navToggler.click();
+                }
+            }));
+        }
+
+        // Initialize mobile menu
+        initMobileMenu();
+
+        // Add animation classes as elements come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.animate__animated');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add(entry.target.dataset.animation);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            animateElements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
 </body>
 </html>

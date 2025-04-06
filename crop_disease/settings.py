@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ej=koo7n93n9i9i7l%0k3^=j0+ho#fn&=_+$)g(1$a5t&@gt!8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True 
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'prediction',
     'voicebot',
     'chatbot',
+    'weather_api',
 ]
 
 MIDDLEWARE = [
