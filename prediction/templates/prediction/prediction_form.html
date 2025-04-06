@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Disease Detection</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css"
+        integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poetsen+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #014f5d;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-family: "Poetsen One", sans-serif;
+            font-weight: 900;
+        }
+        .upload-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .upload-title {
+            background-color: #7b91a4;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .upload-btn {
+            background-color: #014f5d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .upload-btn:hover {
+            background-color: #017a8d;
+        }
+        .preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            display: none;
+        }
+        .instructions {
+            background-color: #f1f1f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            color: #014f5d;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <h1>Crop Disease Detection</h1>
+        <p>Upload an image of a crop leaf to detect diseases</p>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="upload-container">
+                    <h2 class="upload-title text-center">Upload Image</h2>
+                    
+                    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="imageUpload">Select an image of a crop leaf:</label>
+                            <input type="file" class="form-control-file" id="imageUpload" name="image" accept="image/*" required onchange="previewImage(event)">
+                        </div>
+                        
+                        <div class="preview-container">
+                            <img id="imagePreview" alt="Image Preview">
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="upload-btn">Detect Disease</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Instructions:</h3>
+                    <ul>
+                        <li>Take a clear photo of the crop leaf showing the disease symptoms</li>
+                        <li>Make sure the image is well-lit and focused</li>
+                        <li>Supported crops: Corn, Potato, Rice, and Wheat</li>
+                        <li>The system can detect various diseases including Common Rust, Gray Leaf Spot, Leaf Blight, Early Blight, Late Blight, Brown Spot, Hispa, Leaf Blast, Brown Rust, and Yellow Rust</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <a href="{% url 'home' %}" class="back-btn">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('imagePreview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>

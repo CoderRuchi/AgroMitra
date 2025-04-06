@@ -1,0 +1,500 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>BhoomiAI - Agriculture Revolution</title>
+    <meta name="keywords" content="agriculture, farming, crop disease, soil analysis, weather forecast">
+    <meta name="description" content="BhoomiAI - Empowering farmers with AI technology for better crop management and yield prediction">
+    <meta name="author" content="BhoomiAI Team">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.0/dist/css/bootstrap.min.css">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6b7908;
+            --secondary-color: #1c1c1b;
+            --text-color: #444;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --dark-green: #3a4a00;
+            --light-green: #e9f5db;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+        }
+
+        .loader_bg {
+            position: fixed;
+            z-index: 9999999;
+            background: var(--white);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Header Styles */
+        .header-area {
+            border-top: var(--primary-color) solid 10px;
+            width: 100%;
+            position: fixed;
+            z-index: 9999;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.98);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-area.scrolled {
+            height: 70px;
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo a {
+            color: var(--secondary-color);
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo a span {
+            color: var(--primary-color);
+        }
+
+        .logo a:hover {
+            opacity: 0.9;
+        }
+
+        .navbar-area {
+            display: flex;
+            justify-content: center;
+        }
+
+        .site-navbar ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .site-navbar ul li {
+            margin: 0 15px;
+        }
+
+        .site-navbar ul li a {
+            color: var(--secondary-color);
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 5px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .site-navbar ul li a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .site-navbar ul li a:hover:after,
+        .site-navbar ul li a.active:after {
+            width: 100%;
+        }
+
+        .site-navbar ul li a:hover,
+        .site-navbar ul li a.active {
+            color: var(--primary-color);
+        }
+
+        .email li a {
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .email li a:hover {
+            color: var(--primary-color);
+        }
+
+        /* About Section */
+        .about {
+            padding: 120px 0 80px;
+            background-color: var(--white);
+        }
+
+        .titlepage span {
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .titlepage h2 {
+            color: var(--secondary-color);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        .titlepage.text_align_left {
+            text-align: left;
+        }
+
+        .about_img {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about_img img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .about_img:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+
+        .hedingh3 h3 {
+            color: var(--white);
+            font-size: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .hedingh3 h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .menu_footer li {
+            margin-bottom: 12px;
+        }
+
+        .menu_footer li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu_footer li a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .top_infomation li {
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .top_infomation li i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .top_infomation li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .top_infomation li a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .titlepage h2 {
+                font-size: 32px;
+            }
+            
+            .site-navbar ul li {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-area {
+                height: auto;
+                padding: 15px 0;
+            }
+            
+            .logo {
+                text-align: center;
+                margin-bottom: 15px;
+            }
+            
+            .navbar-area {
+                justify-content: center;
+            }
+            
+            .titlepage h2 {
+                font-size: 28px;
+            }
+            
+            .about {
+                padding: 80px 0 60px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .titlepage h2 {
+                font-size: 24px;
+            }
+            
+            .titlepage span {
+                font-size: 16px;
+            }
+            
+            .site-navbar ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .site-navbar ul li {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body class="main-layout inner_page about_page">
+    <!-- loader  -->
+    <div class="loader_bg">
+        <div class="loader"><img src="https://i.imgur.com/FgSvTkT.gif" alt="Loading..."/></div>
+    </div>
+    <!-- end loader -->
+    
+    <!-- header -->
+    <header class="header-area">
+        <div class="container-fluid">
+            <div class="row d_flex align-items-center">
+                <div class="col-md-2 col-sm-12">
+                    <div class="logo">
+                        <a href="{% url 'home' %}">Bhoomi<span>AI</span></a>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-12">
+                    <div class="navbar-area">
+                        <nav class="site-navbar">
+                            <ul>
+                                <li><a href="{% url 'home' %}">Home</a></li>
+                                <li><a href="{% url 'about' %}">About</a></li>
+                                <li><a href="{% url 'services' %}">Services</a></li>
+                                <li><a href="#">Solutions</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                            <button class="nav-toggler">
+                                <span></span>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-md-2 padd_0 d_none">
+                    <ul class="email text_align_right">
+                        <li><a href="Javascript:void(0)">Login</a></li>
+                        <li><a href="Javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- end header inner -->
+
+    <!-- about -->
+    <div class="about">
+        <div class="container-fluid">
+            <div class="row d_flex align-items-center">
+                <div class="col-lg-6 col-md-12">
+                    <div class="titlepage text_align_left">
+                        <span>About Us</span>
+                        <h2>AGRICULTURE REVOLUTION</h2>
+                        <p>In today's world, agriculture faces numerous challenges, from unpredictable weather patterns to crop diseases and soil degradation. Our project, BhoomiAI, aims to tackle these agricultural difficulties using technology, bringing innovative solutions to small-scale farmers who often struggle with limited resources.</p>
+                        <p>We are committed to empowering farmers with the tools they need to make informed decisions, improve their yields, and ultimately enhance their livelihoods. By harnessing the power of technology, we can help create a more sustainable and resilient agricultural sector.</p>
+                        <a href="#" class="btn btn-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="row d_flex">
+                        <div class="col-md-12">
+                            <div class="about_img">
+                                <figure>
+                                    <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=1000&auto=format&fit=crop" alt="Farmers working in field"/>
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end about -->
+
+    <!--  footer -->
+    <footer>
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="hedingh3 text_align_left">
+                            <h3>BhoomiAI</h3>
+                            <p>Empowering farmers with AI technology for sustainable agriculture and better yields.</p>
+                            <div class="social_icon mt-4">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="hedingh3 text_align_left">
+                            <h3>Explore</h3>
+                            <ul class="menu_footer">
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="about.html">About</a></li>
+                                <li><a href="service.html">Services</a></li>
+                                <li><a href="#">Solutions</a></li>
+                                <li><a href="#">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="hedingh3 text_align_left">
+                            <h3>Services</h3>
+                            <ul class="menu_footer">
+                                <li><a href="#">Soil Analysis</a></li>
+                                <li><a href="#">Crop Disease Detection</a></li>
+                                <li><a href="#">Weather Forecast</a></li>
+                                <li><a href="#">Voice Assistant</a></li>
+                                <li><a href="#">Farm Management</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="hedingh3 text_align_left">
+                            <h3>Contact</h3>
+                            <ul class="top_infomation">
+                                <li><i class="fa fa-map-marker" aria-hidden="true"></i>
+                                    Farm Street, Agriculture City
+                                </li>
+                                <li><i class="fa fa-phone" aria-hidden="true"></i>
+                                    +01 1234567890
+                                </li>
+                                <li><i class="fa fa-envelope" aria-hidden="true"></i>
+                                    <a href="mailto:info@bhoomiai.com">info@bhoomiai.com</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>&copy; 2023 BhoomiAI. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end footer -->
+
+    <!-- Javascript files-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Remove loader when page is loaded
+        $(window).on('load', function() {
+            $('.loader_bg').fadeOut('slow');
+        });
+
+        // Header scroll effect
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 50) {
+                $('.header-area').addClass('scrolled');
+            } else {
+                $('.header-area').removeClass('scrolled');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        $('a[href*="#"]').on('click', function(e) {
+            e.preventDefault();
+            $('html, body').animate(
+                {
+                    scrollTop: $($(this).attr('href')).offset().top,
+                },
+                500,
+                'linear'
+            );
+        });
+    </script>
+</body>
+</html>
