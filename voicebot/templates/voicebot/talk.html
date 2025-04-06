@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multilingual Farmer Voice Assistant</title>
+  <style>
+    :root {
+      --primary-color: #4285F4; /* Google Blue */
+      --secondary-color: #34A853; /* Google Green */
+      --accent-color: #FBBC05; /* Google Yellow */
+      --danger-color: #EA4335; /* Google Red */
+      --light-bg: #F8F9FA;
+      --dark-bg: #202124;
+      --text-color: #3c4043;
+      --light-text: #5f6368;
+      --border-radius: 24px;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Google Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .assistant-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 100px);
+    }
+
+    .form-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    select {
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      border: 1px solid #dadce0;
+      background-color: white;
+      font-size: 16px;
+      color: var(--text-color);
+      flex-grow: 1;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #regular-talk-btn {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    #continuous-mode-btn {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    #stop-btn {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    #clear-history-btn {
+      background-color: var(--accent-color);
+      color: var(--dark-bg);
+    }
+
+    .conversation {
+      background-color: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-top: 20px;
+      flex-grow: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .message-container {
+      display: flex;
+      margin-bottom: 16px;
+      max-width: 80%;
+    }
+
+    .user-container {
+      align-self: flex-end;
+    }
+
+    .bot-container {
+      align-self: flex-start;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .user-avatar {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .bot-avatar {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .user-message {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 18px 18px 0 18px;
+      position: relative;
+      max-width: 100%;
+    }
+
+    .bot-message {
+      background-color: #f1f3f4;
+      padding: 12px 16px;
+      border-radius: 18px 18px 18px 0;
+      position: relative;
+      max-width: 100%;
+    }
+
+    .bot-translated {
+      background-color: #e8f0fe;
+      padding: 12px 16px;
+      border-radius: 18px 18px 18px 0;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .audio-wrapper {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .audio-control {
+      width: 100%;
+      border-radius: 24px;
+    }
+
+    .play-audio-btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      align-self: flex-start;
+      transition: all 0.2s ease;
+    }
+
+    .play-audio-btn:hover {
+      background-color: #3367d6;
+      transform: translateY(-2px);
+    }
+
+    .audio-direct-link {
+      font-size: 12px;
+      color: var(--primary-color);
+      text-decoration: none;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .audio-direct-link:hover {
+      text-decoration: underline;
+    }
+
+    .audio-loading-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--light-text);
+      margin-top: 8px;
+    }
+
+    .loading-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(66, 133, 244, 0.2);
+      border-top: 2px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .audio-error {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #d32f2f;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background-color: rgba(211, 47, 47, 0.1);
+      border-radius: 8px;
+    }
+
+    .instructions {
+      background-color: white;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      margin-top: 16px;
+      color: var(--primary-color);
+      height: 24px;
+    }
+
+    .listening-indicator {
+      display: inline-flex;
+      margin-left: 8px;
+    }
+
+    .listening-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      margin: 0 2px;
+      opacity: 0.3;
+    }
+
+    .listening .listening-dot:nth-child(1) {
+      animation: pulse 1.5s infinite 0s;
+    }
+
+    .listening .listening-dot:nth-child(2) {
+      animation: pulse 1.5s infinite 0.2s;
+    }
+
+    .listening .listening-dot:nth-child(3) {
+      animation: pulse 1.5s infinite 0.4s;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .ai-status {
+      background-color: #e8f0fe;
+      border-left: 4px solid var(--primary-color);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .ai-status h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .controls {
+        flex-direction: column;
+      }
+
+      button, select {
+        width: 100%;
+      }
+
+      .message-container {
+        max-width: 90%;
+      }
+    }
+  </style>
+  <script>
+    // Function to scroll conversation to bottom
+    function scrollToBottom() {
+      const conversation = document.getElementById('conversation');
+      if (conversation) {
+        conversation.scrollTop = conversation.scrollHeight;
+      }
+    }
+
+    // Function to play audio elements sequentially
+    function playAudioSequentially() {
+      const audioElements = document.querySelectorAll('audio');
+      let currentAudio = 0;
+
+      // Play the first audio if available
+      if (audioElements.length > 0) {
+        try {
+          // Try to play with promise (modern browsers)
+          const playPromise = audioElements[currentAudio].play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log('Sequential audio playback started');
+
+                // Set up event listener for when audio ends
+                audioElements.forEach(audio => {
+                  audio.addEventListener('ended', function() {
+                    currentAudio++;
+                    if (currentAudio < audioElements.length) {
+                      audioElements[currentAudio].play()
+                        .catch(error => console.error('Error in sequential playback:', error));
+                    }
+                  });
+                });
+              })
+              .catch(error => {
+                console.error('Error starting sequential playback:', error);
+                // Auto-play might be blocked by browser policy
+                console.log('Audio auto-play might be blocked by the browser. Use the play buttons instead.');
+              });
+          }
+        } catch (error) {
+          console.error('Error in sequential audio playback:', error);
+        }
+      }
+    }
+
+    // When the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      scrollToBottom();
+
+      // Set up continuous mode button
+      const continuousModeBtn = document.getElementById('continuous-mode-btn');
+      const regularTalkBtn = document.getElementById('regular-talk-btn');
+      const stopBtn = document.getElementById('stop-btn');
+      const clearHistoryBtn = document.getElementById('clear-history-btn');
+      const statusDiv = document.getElementById('status');
+
+      // Add visual feedback when buttons are clicked
+      const addClickEffect = (button) => {
+        if (button) {
+          button.addEventListener('mousedown', function() {
+            this.style.transform = 'scale(0.95)';
+          });
+
+          button.addEventListener('mouseup', function() {
+            this.style.transform = '';
+          });
+
+          button.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+          });
+        }
+      };
+
+      // Apply click effect to all buttons
+      addClickEffect(continuousModeBtn);
+      addClickEffect(regularTalkBtn);
+      addClickEffect(stopBtn);
+      addClickEffect(clearHistoryBtn);
+
+      if (continuousModeBtn) {
+        continuousModeBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('continuous_mode').value = 'true';
+
+          // Show loading state
+          this.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+            Starting...
+          `;
+          this.disabled = true;
+
+          document.getElementById('talk-form').submit();
+        });
+      }
+
+      if (stopBtn) {
+        stopBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Say 'bye' to end the conversation
+          const byeForm = document.createElement('form');
+          byeForm.method = 'POST';
+          byeForm.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="lang" value="{{ selected_lang }}">
+            <input type="hidden" name="continuous_mode" value="true">
+            <input type="hidden" name="user_input" value="bye">
+            <input type="hidden" name="stop_button" value="true">
+          `;
+
+          // Show loading state
+          this.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>
+            Stopping...
+          `;
+          this.disabled = true;
+
+          document.body.appendChild(byeForm);
+          byeForm.submit();
+        });
+      }
+
+      if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Clear conversation history
+          const clearForm = document.createElement('form');
+          clearForm.method = 'POST';
+          clearForm.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="lang" value="{{ selected_lang }}">
+            <input type="hidden" name="clear_history" value="true">
+          `;
+
+          // Show loading state
+          this.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Clearing...
+          `;
+          this.disabled = true;
+
+          document.body.appendChild(clearForm);
+          clearForm.submit();
+        });
+      }
+
+      // Set up audio playback buttons with optimized loading
+      const playButtons = document.querySelectorAll('.play-audio-btn');
+      playButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const audioPath = this.getAttribute('data-audio-path');
+          const audioElement = this.previousElementSibling;
+          const loadingIndicator = this.nextElementSibling;
+
+          // Show loading indicator
+          if (loadingIndicator && loadingIndicator.classList.contains('audio-loading-indicator')) {
+            loadingIndicator.classList.remove('hidden');
+          }
+
+          // Disable button during loading
+          this.disabled = true;
+
+          // Try multiple methods to play the audio
+          try {
+            // Method 1: Using the audio element's play method with optimized loading
+            if (audioElement && audioElement.tagName === 'AUDIO') {
+              // Load the audio file if not already loaded
+              if (audioElement.readyState < 2) { // HAVE_CURRENT_DATA
+                audioElement.load();
+              }
+
+              // Set up event listeners for loading states
+              audioElement.addEventListener('canplay', function() {
+                // Hide loading indicator once audio can play
+                if (loadingIndicator) {
+                  loadingIndicator.classList.add('hidden');
+                }
+                // Re-enable button
+                button.disabled = false;
+              }, { once: true });
+
+              // Set a timeout to handle slow loading
+              const loadTimeout = setTimeout(() => {
+                if (audioElement.readyState < 2) {
+                  console.log('Audio loading taking longer than expected...');
+                }
+              }, 2000);
+
+              // Play the audio
+              audioElement.play()
+                .then(() => {
+                  clearTimeout(loadTimeout);
+                  console.log('Audio playback started successfully');
+                  this.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    Playing...
+                  `;
+
+                  // Reset button when audio ends
+                  audioElement.onended = () => {
+                    this.innerHTML = `
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      Play Audio
+                    `;
+                    this.disabled = false;
+                  };
+                })
+                .catch(error => {
+                  clearTimeout(loadTimeout);
+                  console.error('Error playing audio:', error);
+
+                  // Hide loading indicator
+                  if (loadingIndicator) {
+                    loadingIndicator.classList.add('hidden');
+                  }
+
+                  // Re-enable button
+                  this.disabled = false;
+
+                  // Method 2: Create a new audio element and play it
+                  try {
+                    const newAudio = new Audio(audioPath);
+                    newAudio.play();
+                  } catch (innerError) {
+                    console.error('Fallback audio playback failed:', innerError);
+                    // Method 3: Open the audio in a new tab
+                    window.open(audioPath, '_blank');
+                  }
+                });
+            }
+          } catch (error) {
+            console.error('Error playing audio:', error);
+
+            // Hide loading indicator
+            if (loadingIndicator) {
+              loadingIndicator.classList.add('hidden');
+            }
+
+            // Re-enable button
+            this.disabled = false;
+
+            // Method 3: Open the audio in a new tab
+            window.open(audioPath, '_blank');
+          }
+        });
+      });
+
+      // Try to play the most recent audio if available, with optimized loading
+      const audioElements = document.querySelectorAll('audio');
+      if (audioElements.length > 0) {
+        const lastAudio = audioElements[audioElements.length - 1];
+        const lastPlayButton = lastAudio.nextElementSibling;
+        const lastLoadingIndicator = lastPlayButton ? lastPlayButton.nextElementSibling : null;
+
+        // Add a slight delay to ensure the page is fully loaded
+        setTimeout(() => {
+          // Only attempt auto-play for short audio files (check the file size via headers)
+          fetch(lastAudio.querySelector('source').src, { method: 'HEAD' })
+            .then(response => {
+              // Get content length if available
+              const contentLength = response.headers.get('content-length');
+
+              // Only auto-play if file is relatively small (< 100KB) to avoid long loading times
+              if (!contentLength || parseInt(contentLength) < 100000) {
+                // Show loading indicator
+                if (lastLoadingIndicator && lastLoadingIndicator.classList.contains('audio-loading-indicator')) {
+                  lastLoadingIndicator.classList.remove('hidden');
+                }
+
+                // Load the audio
+                lastAudio.load();
+
+                // Listen for when it's ready to play
+                lastAudio.addEventListener('canplaythrough', function() {
+                  // Hide loading indicator
+                  if (lastLoadingIndicator) {
+                    lastLoadingIndicator.classList.add('hidden');
+                  }
+
+                  // Try to play
+                  try {
+                    const playPromise = lastAudio.play();
+                    if (playPromise !== undefined) {
+                      playPromise.catch(error => {
+                        console.log('Auto-play prevented by browser. Use the play button instead.');
+                        // Highlight the play button to draw attention to it
+                        if (lastPlayButton) {
+                          lastPlayButton.style.animation = 'pulse 1.5s 3';
+                        }
+                      });
+                    }
+                  } catch (error) {
+                    console.error('Error playing last audio:', error);
+                  }
+                }, { once: true });
+              } else {
+                console.log('Audio file too large for auto-play. Use the play button instead.');
+                // Highlight the play button
+                if (lastPlayButton) {
+                  lastPlayButton.style.animation = 'pulse 1.5s 3';
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error checking audio file:', error);
+            });
+        }, 500);
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="assistant-container">
+    <h2>Multilingual Farmer Voice Assistant</h2>
+
+    <div class="form-container">
+      <form id="talk-form" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="continuous_mode" name="continuous_mode" value="false">
+        <label><strong>Select Language:</strong></label>
+        <div class="controls">
+          <select name="lang">
+            <option value="english" {% if selected_lang == 'en' %}selected{% endif %}>English</option>
+            <option value="hindi" {% if selected_lang == 'hi' %}selected{% endif %}>Hindi</option>
+            <option value="marathi" {% if selected_lang == 'mr' %}selected{% endif %}>Marathi</option>
+            <option value="gujarati" {% if selected_lang == 'gu' %}selected{% endif %}>Gujarati</option>
+            <option value="tamil" {% if selected_lang == 'ta' %}selected{% endif %}>Tamil</option>
+            <option value="telugu" {% if selected_lang == 'te' %}selected{% endif %}>Telugu</option>
+          </select>
+          <button id="regular-talk-btn" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+            Ask Once
+          </button>
+          <button id="continuous-mode-btn" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+            Start Listening
+          </button>
+          <button id="stop-btn" type="button" class="{% if not conversation_history %}hidden{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2" ry="2"></rect></svg>
+            Stop
+          </button>
+          <button id="clear-history-btn" type="button" class="{% if not conversation_history %}hidden{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Clear History
+          </button>
+        </div>
+      </form>
+      <div id="status" class="status {% if conversation_history %}listening{% endif %}">
+        {% if conversation_history %}
+          Listening...
+          <div class="listening-indicator">
+            <div class="listening-dot"></div>
+            <div class="listening-dot"></div>
+            <div class="listening-dot"></div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if conversation_history %}
+    <div id="conversation" class="conversation">
+      {% for message in conversation_history %}
+        {% if message.user_input %}
+        <div class="message-container user-container">
+          <div class="message-content">
+            <div class="user-message">{{ message.user_input }}</div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="message-container bot-container">
+          <div class="avatar bot-avatar">AI</div>
+          <div class="message-content">
+            <div class="bot-message">{{ message.bot_response }}</div>
+            {% if message.translated != message.bot_response %}
+              <div class="bot-translated">{{ message.translated }}</div>
+            {% endif %}
+            {% if message.audio_path %}
+              <div class="audio-wrapper">
+                <!-- Debug info -->
+                <div class="audio-debug" style="font-size: 10px; color: #666; margin-bottom: 5px;">
+                  Audio path: {{ message.audio_path|default:"None" }}
+                </div>
+
+                <!-- Audio controls if path exists -->
+                {% if message.audio_path %}
+                <audio class="audio-control" controls preload="none">
+                  <source src="{{ message.audio_path }}" type="audio/mpeg">
+                  Your browser does not support the audio element.
+                </audio>
+                <button class="play-audio-btn" data-audio-path="{{ message.audio_path }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  Play Audio
+                </button>
+                <div class="audio-loading-indicator hidden">
+                  <div class="loading-spinner"></div>
+                  <span>Loading audio...</span>
+                </div>
+                <a href="{{ message.audio_path }}" target="_blank" class="audio-direct-link">Direct Link</a>
+
+                <!-- Error message if no audio path -->
+                {% else %}
+                <div class="audio-error">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  <span>Audio generation failed. Please try again.</span>
+                </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="instructions">
+      <h3>How to use:</h3>
+      <p>1. Select your preferred language from the dropdown</p>
+      <p>2. Choose between:</p>
+      <ul>
+        <li><strong>Single Question Mode:</strong> Click "Ask Once" to ask a single question</li>
+        <li><strong>Continuous Mode:</strong> Click "Start Continuous Mode" to have a conversation until you say "bye"</li>
+      </ul>
+      <p><strong>Example questions:</strong></p>
+      <ul>
+        <li>"How to grow wheat?"</li>
+        <li>"What are common maize diseases?"</li>
+        <li>"How to improve clay soil?"</li>
+        <li>"Tell me about organic farming"</li>
+        <li>"What fertilizer should I use for tomatoes?"</li>
+      </ul>
+      <p><strong>To end continuous mode:</strong> Say "bye" or click the "Stop" button</p>
+    </div>
+
+    <div class="ai-status">
+      <h3>AI Status:</h3>
+      <p>Currently using <strong>Google's Gemini AI</strong> for enhanced agricultural responses.</p>
+      <p>The voicebot combines Gemini's advanced language capabilities with our specialized agricultural knowledge base.</p>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
